@@ -49,7 +49,42 @@ The advanced agent demonstrates:
 
 ## Understanding the Code
 
-### Advanced Agent
+### Advanced Agent Architecture
+
+```mermaid
+graph TD
+    User[User] <--> Main[Main Agent\nAdvanced Assistant]
+    Main --> CT[classify_query_tool]
+    Main --> RT[get_response_template_tool]
+    CT --> CA[Classifier Agent\nQuery Classifier]
+    CA --> CT
+    RT --> KB[Knowledge Base]
+    KB --> RT
+
+    subgraph Function Tools
+        CT
+        RT
+    end
+
+    subgraph Knowledge Base
+        KB --- KBData[Predefined Responses\ngreeting, weather, help, default]
+    end
+
+    subgraph Workflow
+        User -- "1. Input Query" --> Main
+        Main -- "2. Send Query" --> CT
+        CT -- "3. Request Classification" --> CA
+        CA -- "4. Return Category" --> CT
+        CT -- "5. Return Category" --> Main
+        Main -- "6. Request Template" --> RT
+        RT -- "7. Fetch Template" --> KB
+        KB -- "8. Return Template" --> RT
+        RT -- "9. Return Template" --> Main
+        Main -- "10. Generate Response" --> User
+    end
+```
+
+### Advanced Agent Details
 
 The `advanced_agent.py` file demonstrates more complex agent capabilities:
 
